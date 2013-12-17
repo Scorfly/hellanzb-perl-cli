@@ -6,42 +6,37 @@ use strict;
 use warnings;
 
 use Data::Dumper;
+use RPC::XML::Client;
+
+my $xmlrpc;
 
 ##
-# Connect to server  
+# Connect to server
 #
-sub hellanzbConnect 
+sub new
 {
-
-    # This is defaut user / pass / serveur with hellanzb. 
-    # TODO : define it with a config file
-
-    my $host    = 'localhost';
-    my $port    =  8760;
-    my $user    = 'hellanzb';
-    my $passwd  = 'changeme';
-    my $disk    = '/media/download/usenet';
-
-    my $xmlrpc = RPC::XML::Client->new("http://$user:$passwd\@$host:$port");
-    return $xmlrpc;
+    my ($class, $host, $port, $user, $passwd ) = @_;
+    bless (my $self = {}, $class);
+    $xmlrpc = RPC::XML::Client->new("http://$user:$passwd\@$host:$port");
+    return $self;
 }
 
 ##
 # Get info aboute queue / processing / downloading
 #
-sub hellanzbStatus
+sub status
 {
-    my $xmlrpc  = hellanzbConnect();
+    my ($this) = @_;
     my $res = $xmlrpc->send_request("status");
     return $res;
 }
 
 ##
-#   Cancel current download
+# Cancel current download
 #
-sub hellanzbCancel
+sub cancel
 {
-    my $xmlrpc  = hellanzbConnect();
+    my ($this) = @_;
     $xmlrpc->send_request("cancel");
 }
 
