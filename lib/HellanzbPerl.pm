@@ -4,8 +4,6 @@ package HellanzbPerl;
 
 use strict;
 use warnings;
-
-use Data::Dumper;
 use RPC::XML::Client;
 
 my $xmlrpc;
@@ -49,12 +47,58 @@ sub continue
 }
 
 ##
+# go down in the list of file to download
+#
+sub down
+{
+    my ($this, $id) = @_;
+    $xmlrpc->send_request("down", $id);
+}
+
+##
+#    Force hellanzb to begin downloading the NZB with the specified ID immediately, interrupting the current download 
+#
+sub force
+{
+    my ($this, $id) = @_;
+    $xmlrpc->send_request("force", $id);
+}
+
+##
+#   set it to the last position of the list of file to download
+#
+sub last
+{
+    my ($this, $id) = @_;
+    $xmlrpc->send_request("last", $id);
+}
+
+##
+#   set it to the first position of the list of file to download
+#
+sub next
+{
+    my ($this, $id) = @_;
+    $xmlrpc->send_request("next", $id);
+}
+
+##
 # Pause downloading
 #
 sub pause
 {
     my ($this) = @_;
     $xmlrpc->send_request("pause");
+}
+
+##
+#   Remove the NZB with specified ID from the queue
+#   info : I had som 8002 error sometimes. I don't know why ...
+#
+sub remove
+{
+    my ($this, $id) = @_;
+    $xmlrpc->send_request("dequeue", $id);
 }
 
 ##
@@ -76,34 +120,13 @@ sub status
     return $res;
 }
 
-1;
-
 ##
-#   List function TODO :
+#   go up in the list of file to download
 #
-#dequeue nzbid
-#    Remove the NZB with specified ID from the queue 
-#down nzbid [shift]
-#    Move the NZB with the specified ID down in the queue. The optional second argument specifies the number of spaces to shift by (Default: 1) 
-#enqueue nzbfile
-#    Add the specified NZB file to the end of the queue 
-#enqueuenewzbin nzbid
-#    Download the NZB with the specified NZB ID from www.newzbin.com, and enqueue it 
-#force nzbid
-#    Force hellanzb to begin downloading the NZB with the specified ID immediately, interrupting the current download 
-#last nzbid
-#    Move the NZB with the specified ID to the end of the queue 
-#list [excludeids]
-#    List the NZBs in the queue, along with their NZB IDs. Specify True as the second argument to exclude the NZB ID in the listing 
-#maxrate [newrate]
-#    Return the Hellanzb.MAX_RATE (maximum download rate) value. Specify a second argument to change the value -- a value of zero denotes no maximum rate 
-#move nzbid index
-#    Move the NZB with the specified ID to the specified index in the queue 
-#next nzbid
-#    Move the NZB with the specified ID to the beginning of the queue 
-#process archivedir
-#    Post process the specified directory. The -p option is preferable -- it will do this for you, or use the current process if this XML-RPC call fails 
-#setrarpass nzbid pass 
-#    Set the rarPassword for the NZB with the specified ID
-#up nzbid [shift]
-#    Move the NZB with the specified ID up in the queue. The optional second argument specifies the number of spaces to shift by (Default: 1) 
+sub up
+{
+    my ($this, $id) = @_;
+    $xmlrpc->send_request("up", $id);
+}
+
+1;
