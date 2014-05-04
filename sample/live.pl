@@ -95,8 +95,24 @@ if (defined($action) && $action eq 'status')
         print '</div>';
     }
 
-    # traitement en cour
-    # TODO
+    # Processing
+    my $processing = $modDatas->{'xmlrpc'}->{'currently_processing'}[0];
+    if ($processing ne '')
+    {
+        print '<div class="panel panel-warning" id="downloading">';
+        print ' <div class="panel-heading">';
+        print '     <h3 class="panel-title">En cour de traitement</h3>';
+        print ' </div>';
+        print ' <div class="panel-body">';
+        my @listProcessing = $modDatas->{'xmlrpc'}->{'currently_processing'}->value;
+        my $listFile = $listProcessing[0];
+        foreach my $file (@$listFile)
+        {
+            print $file->{'nzbName'} . "<br />";
+        }
+        print ' </div>';
+        print "</div>";
+    }
 
     # downloading
     my $downloading = $res->{'currently_downloading'}[0];
